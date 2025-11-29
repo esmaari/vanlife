@@ -639,6 +639,12 @@ i[class*='van-type-'] {
   padding-inline: 27px;
 }
 
+.login-note {
+  margin-top: 8px;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
 .login-form {
   display: flex;
   flex-direction: column;

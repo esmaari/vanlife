@@ -42,6 +42,7 @@ export default function Login() {
     return (
         <div className="login-container">
             <h1>Sign in to your account</h1>
+            <span className="login-note">Use demo credentials: e@e.com / 1234</span>
 
             {
                 location.state?.message && (
