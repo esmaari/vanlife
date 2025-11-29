@@ -1,5 +1,3 @@
-import React from "react";
-
 const dashboardStats = [
   { label: "Total income (30d)", value: "$5,400" },
   { label: "Vans listed", value: "3" },

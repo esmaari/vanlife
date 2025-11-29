@@ -1,5 +1,3 @@
-import React from "react";
-
 const incomeSummary = {
   currentMonth: 5400,
   previous30Days: 4800,
