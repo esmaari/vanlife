@@ -1,74 +1,93 @@
-# React + TypeScript + Vite
+# VanLife
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+VanLife is a React + TypeScript single page application for browsing, filtering, and managing camper van listings. It showcases a public catalog, host dashboard, and Supabase-backed data fetching that replaces the earlier Mirage mock server.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Public van catalog with filtering, detail views, and Unsplash photo credits
+- Host-only dashboard with income, reviews, and individual van management
+- Fake login flow that persists auth state in `localStorage`
+- Supabase integration for fetching vans via `@supabase/supabase-js`
+- Netlify-ready build with SPA redirect rules (`netlify.toml`)
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- [React 19](https://react.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Vite 7](https://vite.dev/)
+- [React Router 7](https://reactrouter.com/)
+- [Supabase JS](https://supabase.com/)
+- [Netlify](https://www.netlify.com/) for hosting (optional)
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Prerequisites
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Node.js 18+ (recommended 20+)
+- npm (comes with Node)
+- Supabase project with a `vans` table containing `thanks` attribution text and Unsplash image URLs
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Installation
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+git clone <your-fork-url> vanlife
+cd vanlife
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Create an `.env` file in the project root:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
-# vanlife
+VITE_SUPABASE_URL=<your-supabase-url>
+VITE_SUPABASE_ANON_KEY=<your-supabase-anon-key>
+```
+
+> Never commit real keys. `.env` is ignored via `.gitignore`.
+
+### Supabase Schema
+
+The `vans` table should include columns that match the `Van` type in `src/types/van.ts`:
+
+| column      | type    | notes                                   |
+|-------------|---------|-----------------------------------------|
+| id          | uuid    | primary key                             |
+| name        | text    |                                         |
+| price       | numeric | daily price                             |
+| description | text    |                                         |
+| image_url   | text    | direct `images.unsplash.com` URL        |
+| type        | text    | e.g., `simple`, `luxury`, `rugged`      |
+| host_id     | text    | used to filter host vans (ex: `"123"`)  |
+| thanks      | text    | Unsplash attribution HTML string        |
+
+Ensure [Row Level Security policies](https://supabase.com/docs/guides/auth/row-level-security) allow the `anon` key to `SELECT` from `vans`.
+
+### Scripts
+
+```bash
+npm run dev       # start Vite dev server
+npm run build     # type-check + production build
+npm run preview   # preview the production build
+npm run lint      # eslint
+```
+
+## Deployment
+
+1. Configure environment variables in your host (e.g., Netlify → Site Settings → Environment) for `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
+2. Run `npm run build` locally or let the platform do it.
+3. Deploy the `dist` output (`publish = "dist"` is already set in `netlify.toml`).
+
+Netlify automatically handles SPA routing via the `/* → /index.html` redirect rule.
+
+## Image Credits
+
+Each van includes an Unsplash credit snippet stored in Supabase (`thanks` column). The UI renders this snippet directly below every photo to satisfy Unsplash attribution requirements.
+
+## Contributing
+
+1. Fork and clone the repo.
+2. Create a feature branch (`git checkout -b feature/my-feature`).
+3. Commit your changes and open a pull request.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
